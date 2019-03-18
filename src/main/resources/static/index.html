@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<section>
+    <h1>계산기</h1>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+
+    <div>
+        <input id="num1" name="num1" type="text">
+        <input id="num2" name="num2" type="text">
+        <button id="plus" onclick="send('+')">+</button>
+        <button id="minus" onclick="send('-')">-</button>
+        <button id="mul" onclick="send('×')">×</button>
+        <button id="div" onclick="send('÷')">÷</button> <br>
+
+        <div id="display-response">결과</div>
+    </div>
+
+    <script>
+        async function send(oper) {
+
+            let str_num1 = $("#num1").val().trim();
+            let str_num2 = $("#num2").val().trim();
+
+            if(! str_num1 || str_num1 === '' || ! str_num2 || str_num2 === '') {
+                $('#display-response').html('숫자를 입력하세요');
+                return;
+            }
+
+            let num1 = parseInt(str_num1);
+            let num2 = parseInt(str_num2);
+
+            if(oper == '+') num1 += num2;
+            if(oper == '-') num1 -= num2;
+            if(oper == '×') num1 *= num2;
+            if(oper == '÷') num1 /= num2;
+
+            try {
+                let response = await $.get('/calculator/' + num1);
+                $('#display-response').html(JSON.stringify(response));
+            } catch (err) {
+                $('#display-response').html(JSON.stringify(err));
+            } finally {
+                $('#display-response').html(
+                    $('#display-response').html() + '<br>이 부분은 항상 실행됨'
+                );
+            }
+        }
+    </script>
+
+</section>
+</body>
+</html>
